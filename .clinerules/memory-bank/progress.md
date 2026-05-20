@@ -21,13 +21,15 @@
 - [x] Tools panel with toggles (SVG icons)
 - [x] Default Electron menu (File, Edit, View, Window, Help)
 - [x] Window size 1200x800
+- [x] Profile persistence with IPC (local JSON file)
 
 ## What's Left to Build
-- [ ] Phase 1.3: Profile persistence with IPC (local JSON file)
+- [ ] AI backend integration (local model)
+- [ ] RAG implementation for document analysis
 
 ## Current Status
-- Phase 1.2: UI redesign complete
-- Next: Profile persistence (Phase 1.3)
+- Phase 1.3: Profile persistence complete
+- Next: AI backend integration
 
 ## Known Issues
 - None identified
@@ -37,3 +39,4 @@
 - 2026-05-20: Phase 1 - Built all UI page components
 - 2026-05-20: Phase 1.1 - Added default Electron menu
 - 2026-05-20: Phase 1.2 - UI redesign (loading screen, remove emojis, fix profile flow)
+- 2026-05-20: Phase 1.3 - Profile persistence with IPC
