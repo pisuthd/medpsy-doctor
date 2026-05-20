@@ -4,8 +4,10 @@ import Sidebar from './Sidebar'
 interface Profile {
   id: string
   name: string
-  type: string
+  type: 'self' | 'family' | 'doctor' | 'community'
   age?: number
+  gender?: 'male' | 'female'
+  createdAt: string
 }
 
 export default function MainLayout({ profile }: { profile: Profile }) {

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import LoadingScreen from './pages/LoadingScreen'
 import ProfileSelector from './pages/ProfileSelector'
@@ -9,20 +9,32 @@ import Chat from './pages/Chat'
 import Documents from './pages/Documents'
 import Tools from './pages/Tools'
 
-type ProfileType = 'self' | 'family' | 'doctor' | 'community'
-
 interface Profile {
   id: string
   name: string
-  type: ProfileType
+  type: 'self' | 'family' | 'doctor' | 'community'
   age?: number
-  createdAt: Date
+  gender?: 'male' | 'female'
+  createdAt: string
 }
 
 function App() {
   const [appState, setAppState] = useState<'loading' | 'profile' | 'main'>('loading')
   const [profile, setProfile] = useState<Profile | null>(null)
   const [profiles, setProfiles] = useState<Profile[]>([])
+
+  useEffect(() => {
+    loadProfiles()
+  }, [])
+
+  const loadProfiles = async () => {
+    try {
+      const loadedProfiles = await window.api.profiles.getAll()
+      setProfiles(loadedProfiles)
+    } catch (error) {
+      console.error('Failed to load profiles:', error)
+    }
+  }
 
   const handleLoadingComplete = () => {
     setAppState('profile')
@@ -33,15 +45,15 @@ function App() {
     setAppState('main')
   }
 
-  const handleProfileCreate = (profileData: Omit<Profile, 'id' | 'createdAt'>) => {
-    const newProfile: Profile = {
-      ...profileData,
-      id: Date.now().toString(),
-      createdAt: new Date(),
+  const handleProfileCreate = async (profileData: { name: string; type: 'self' | 'family' | 'doctor' | 'community'; age?: number; gender?: 'male' | 'female' }) => {
+    try {
+      const newProfile = await window.api.profiles.add(profileData)
+      setProfiles((prev) => [...prev, newProfile])
+      setProfile(newProfile)
+      setAppState('main')
+    } catch (error) {
+      console.error('Failed to create profile:', error)
     }
-    setProfiles((prev) => [...prev, newProfile])
-    setProfile(newProfile)
-    setAppState('main')
   }
 
   if (appState === 'loading') {

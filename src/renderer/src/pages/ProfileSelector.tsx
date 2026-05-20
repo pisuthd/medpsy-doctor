@@ -9,7 +9,7 @@ interface Profile {
   type: ProfileType
   age?: number
   gender?: 'male' | 'female'
-  createdAt: Date
+  createdAt: string
 }
 
 interface ProfileSelectorProps {

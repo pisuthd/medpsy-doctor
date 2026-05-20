@@ -2,6 +2,7 @@ import { app, shell, BrowserWindow, ipcMain, Menu, MenuItemConstructorOptions } 
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import { profileStore, Profile } from './profileStore'
 
 function createDefaultMenu(): void {
   const template: MenuItemConstructorOptions[] = [
@@ -111,6 +112,19 @@ app.whenReady().then(() => {
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
+
+  // Profile IPC handlers
+  ipcMain.handle('profiles:getAll', () => {
+    return profileStore.getAll()
+  })
+
+  ipcMain.handle('profiles:add', (_, profile) => {
+    return profileStore.add(profile)
+  })
+
+  ipcMain.handle('profiles:remove', (_, id) => {
+    return profileStore.remove(id)
+  })
 
   createWindow()
 
