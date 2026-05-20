@@ -3,6 +3,9 @@
 ## Architecture Overview
 - **Framework**: Electron with electron-vite
 - **Frontend**: React 19 + TypeScript
+- **Styling**: TailwindCSS with blue theme
+- **Animations**: Framer Motion
+- **Drag & Drop**: @dnd-kit
 - **Structure**: Main process / Preload / Renderer separation
 
 ## Directory Structure
@@ -13,20 +16,41 @@ src/
 └── renderer/       # React frontend
     └── src/
         ├── components/
-        ├── assets/
+        │   ├── ProfileSelector/
+        │   ├── Dashboard/
+        │   ├── Sessions/
+        │   ├── Chat/
+        │   ├── Loading/
+        │   └── DocumentManager/
+        ├── pages/
+        ├── hooks/
+        ├── stores/
         ├── App.tsx
-        └── main.tsx
+        ├── main.tsx
+        └── index.css
 ```
 
+## Page Structure
+1. **LoadingScreen** - Model loading with progress
+2. **ProfileSelector** - Profile selection/creation with contextual forms
+3. **MainLayout** - Sidebar + Content area
+   - **Dashboard** - Health insights, recent chats
+   - **Sessions** - Table list of all conversations
+   - **Chat** - Conversation interface
+   - **Tools** - Enable integrations
+
 ## Key Technical Decisions
-- [Document key technical decisions here]
+- Use React Router for page navigation
+- State management with Zustand or React Context
+- Framer Motion for page transitions and micro-animations
+- @dnd-kit for document upload drag & drop
 
 ## Design Patterns in Use
-- [Document design patterns used]
+- Component-based architecture
+- Page-based routing
+- Contextual form validation based on profile type
 
 ## Component Relationships
 - Main process → Preload → Renderer (IPC communication)
-- Renderer uses React with component-based architecture
-
-## Critical Implementation Paths
-- [Document critical paths]
+- App.tsx manages page routing
+- Pages wrap shared layout (Sidebar + Content)
