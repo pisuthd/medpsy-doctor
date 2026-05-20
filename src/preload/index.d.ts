@@ -57,8 +57,9 @@ export interface ProfileAPI {
     list: (profileSlug: string) => Promise<Session[]>
     create: (profileSlug: string, sessionSlug: string) => Promise<{ path: string; messagesPath: string }>
     delete: (profileSlug: string, sessionSlug: string) => Promise<{ success: boolean }>
-    loadMessages: (profileSlug: string, sessionSlug: string) => Promise<ChatMessage[]>
-    saveMessages: (profileSlug: string, sessionSlug: string, messages: ChatMessage[]) => Promise<{ success: boolean }>
+    clearMessages: (profileSlug: string, sessionSlug: string) => Promise<{ success: boolean }>
+    loadMessages: (profileSlug: string, sessionSlug: string) => Promise<Message[]>
+    saveMessages: (profileSlug: string, sessionSlug: string, messages: Message[]) => Promise<{ success: boolean }>
   }
 }
 

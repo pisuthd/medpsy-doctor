@@ -24,6 +24,7 @@
 - [x] **Phase 4.1** Model loading on startup, LoadingScreen simplified
 - [x] **Phase 4.2** ProfileContext for global state, session dropdown fix
 - [x] **Phase 4.3** Thinking box above response, trim leading \n
+- [x] **Phase 4.4** Session delete/clear functionality
 
 ## What's Left to Build
 - [ ] RAG implementation for document analysis
@@ -37,6 +38,7 @@
 - AI streaming with thinking box display
 - ProfileContext for global profile state
 - Thinking box now above response, leading \n trimmed
+- Session page has Clear (main) and Delete (non-main) buttons
 
 ## Known Issues
 - None identified
@@ -62,3 +64,4 @@
 - 2026-05-20: Phase 4.1 - Model loading on startup, LoadingScreen simplified
 - 2026-05-20: Phase 4.2 - ProfileContext, session dropdown fix, new session modal
 - 2026-05-20: Phase 4.3 - Thinking box above response, trim leading \n
+- 2026-05-20: Phase 4.4 - Session delete/clear functionality

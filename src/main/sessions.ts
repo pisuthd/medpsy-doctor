@@ -43,17 +43,35 @@ export function createSession(profileSlug: string, sessionSlug: string): { path:
 }
 
 export function deleteSession(profileSlug: string, sessionSlug: string): boolean {
+  const sessionPath = getSessionPath(profileSlug, sessionSlug)
+  
   // Prevent deleting main session
   if (sessionSlug === 'main') {
     return false
   }
-
-  const sessionPath = getSessionPath(profileSlug, sessionSlug)
-  if (fs.existsSync(sessionPath)) {
-    fs.rmSync(sessionPath, { recursive: true, force: true })
+  
+  // For non-main sessions, delete the folder
+  try {
+    if (fs.existsSync(sessionPath)) {
+      fs.rmSync(sessionPath, { recursive: true })
+    }
     return true
+  } catch (error) {
+    console.error('Failed to delete session:', error)
+    return false
   }
-  return false
+}
+
+export function clearSessionMessages(profileSlug: string, sessionSlug: string): boolean {
+  const messagesPath = getMessagesPath(profileSlug, sessionSlug)
+  
+  try {
+    fs.writeFileSync(messagesPath, JSON.stringify([]))
+    return true
+  } catch (error) {
+    console.error('Failed to clear messages:', error)
+    return false
+  }
 }
 
 export function sessionExists(profileSlug: string, sessionSlug: string): boolean {
@@ -163,6 +181,17 @@ export function registerSessionsIpcHandlers(): void {
       return { success: deleted }
     } catch (error) {
       console.error('[Sessions] Failed to delete:', error)
+      throw error
+    }
+  })
+
+  // Clear session messages
+  ipcMain.handle('sessions:clearMessages', async (_event, profileSlug: string, sessionSlug: string) => {
+    try {
+      const cleared = clearSessionMessages(profileSlug, sessionSlug)
+      return { success: cleared }
+    } catch (error) {
+      console.error('[Sessions] Failed to clear messages:', error)
       throw error
     }
   })

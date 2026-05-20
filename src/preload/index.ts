@@ -61,6 +61,7 @@ const api = {
     list: (profileSlug) => ipcRenderer.invoke('sessions:list', profileSlug),
     create: (profileSlug, sessionSlug) => ipcRenderer.invoke('sessions:create', profileSlug, sessionSlug),
     delete: (profileSlug, sessionSlug) => ipcRenderer.invoke('sessions:delete', profileSlug, sessionSlug),
+    clearMessages: (profileSlug, sessionSlug) => ipcRenderer.invoke('sessions:clearMessages', profileSlug, sessionSlug),
     loadMessages: (profileSlug, sessionSlug) => ipcRenderer.invoke('sessions:loadMessages', profileSlug, sessionSlug),
     saveMessages: (profileSlug, sessionSlug, messages) => 
       ipcRenderer.invoke('sessions:saveMessages', profileSlug, sessionSlug, messages),

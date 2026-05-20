@@ -87,8 +87,7 @@ export default function Dashboard() {
     uptime: 0,
     downloading: false,
     downloadProgress: 0,
-  })
-  const [loading, setLoading] = useState(false)
+  }) 
 
   // Poll AI status every second
   useEffect(() => {
@@ -105,20 +104,7 @@ export default function Dashboard() {
     const interval = setInterval(fetchStatus, 3000)
     return () => clearInterval(interval)
   }, [])
-
-  const handleLoadModel = async () => {
-    setLoading(true)
-    try {
-      const result = await window.api.ai.load()
-      if (!result.success) {
-        console.error('Failed to load model:', result.error)
-      }
-    } catch (error) {
-      console.error('Error loading model:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+ 
 
   return (
     <div style={{ fontFamily: sansFont, minHeight: '100vh', position: 'relative' }}>
@@ -200,18 +186,18 @@ export default function Dashboard() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
             <StepCard 
               num="01"
-              title="Wait for Model"
-              subtitle="Take 2-3 minutes on first run. The AI model will be ready on your device."
-            />
-            <StepCard 
-              num="02"
               title="Start Chat"
               subtitle="Tell your symptoms. All conversations are private and stay on your device."
             />
             <StepCard 
+              num="02"
+              title="Upload Documents"
+              subtitle="Upload sensitive data like medical notes. Support PDF and many image types."
+            />
+            <StepCard 
               num="03"
-              title="Tools / RAG"
-              subtitle="Enable tools, upload documents, schedule clinics. AI uses your data."
+              title="Enable Tools"
+              subtitle="To interact with external system like smart devices or schedule appointments."
             />
           </div>
 

@@ -6,7 +6,7 @@ const NAVY = '#0a0a5c'
 const MUTED = '#9999bb'
 
 const monoFont = "'Space Mono', monospace"
-const sansFont = "'DM Sans', sans-serif"
+// const sansFont = "'DM Sans', sans-serif"
 
 type LoadingState = 'checking' | 'loading' | 'ready'
 

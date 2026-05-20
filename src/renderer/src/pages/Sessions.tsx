@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useProfile } from '../context/ProfileContext'
 
-const BLUE = '#1A1AE8'
+// const BLUE = '#1A1AE8'
 const TEAL = '#3EC4C0'
 const NAVY = '#0a0a5c'
 const MUTED = '#9999bb'
@@ -72,6 +72,38 @@ export default function Sessions() {
     navigate(`/chat?session=${slug}`)
   }
 
+  const handleClearMessages = async (slug: string, name: string) => {
+    if (!profile) return
+    
+    const confirmed = window.confirm(`Clear all messages in "${name}"?`)
+    if (!confirmed) return
+
+    try {
+      await window.api.sessions.clearMessages(profile.id, slug)
+      // Refresh list
+      const list = await window.api.sessions.list(profile.id)
+      setSessions(list)
+    } catch (error) {
+      console.error('Failed to clear messages:', error)
+    }
+  }
+
+  const handleDeleteSession = async (slug: string, name: string) => {
+    if (!profile) return
+    
+    const confirmed = window.confirm(`Delete "${name}"? This cannot be undone.`)
+    if (!confirmed) return
+
+    try {
+      await window.api.sessions.delete(profile.id, slug)
+      // Refresh list
+      const list = await window.api.sessions.list(profile.id)
+      setSessions(list)
+    } catch (error) {
+      console.error('Failed to delete session:', error)
+    }
+  }
+
   return (
     <div style={{ padding: '32px', fontFamily: sansFont }}>
       {/* Header */}
@@ -88,10 +120,11 @@ export default function Sessions() {
         <div style={{ height: 3, background: TEAL }} />
         
         {/* Table Header */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 140px 100px', padding: '12px 16px', background: LIGHT_BLUE, borderBottom: '1px solid #e0e0f0' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 140px 100px 60px', padding: '12px 16px', background: LIGHT_BLUE, borderBottom: '1px solid #e0e0f0' }}>
           <span style={{ fontFamily: monoFont, fontSize: 10, letterSpacing: '0.12em', color: MUTED, textTransform: 'uppercase' }}>Conversation</span>
           <span style={{ fontFamily: monoFont, fontSize: 10, letterSpacing: '0.12em', color: MUTED, textTransform: 'uppercase' }}>Date</span>
           <span style={{ fontFamily: monoFont, fontSize: 10, letterSpacing: '0.12em', color: MUTED, textTransform: 'uppercase', textAlign: 'right' }}>Messages</span>
+          <span style={{ fontFamily: monoFont, fontSize: 10, letterSpacing: '0.12em', color: MUTED, textTransform: 'uppercase', textAlign: 'center' }}>Actions</span>
         </div>
 
         {/* Table Rows */}
@@ -111,19 +144,60 @@ export default function Sessions() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: index * 0.05 }}
-                onClick={() => handleSessionClick(session.slug)}
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: '1fr 140px 100px',
+                  gridTemplateColumns: '1fr 140px 100px 60px',
                   padding: '16px',
                   borderBottom: index < sessions.length - 1 ? '1px solid #e0e0f0' : 'none',
-                  cursor: 'pointer',
+                  alignItems: 'center',
                 }}
-                whileHover={{ backgroundColor: LIGHT_BLUE }}
               >
-                <span style={{ fontFamily: sansFont, fontSize: 14, color: NAVY, fontWeight: 500 }}>{session.name}</span>
+                <div 
+                  onClick={() => handleSessionClick(session.slug)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <span style={{ fontFamily: sansFont, fontSize: 14, color: NAVY, fontWeight: 500 }}>{session.name}</span>
+                </div>
                 <span style={{ fontFamily: monoFont, fontSize: 11, color: MUTED, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{formatDate(session.createdAt)}</span>
                 <span style={{ fontFamily: monoFont, fontSize: 12, color: MUTED, textAlign: 'right' }}>{session.messageCount}</span>
+                <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
+                  {/* Clear button - only for main session */}
+                  {session.slug === 'main' && (
+                    <button
+                      onClick={() => handleClearMessages(session.slug, session.name)}
+                      title="Clear messages"
+                      style={{
+                        padding: '6px 10px',
+                        background: '#fff',
+                        border: '1px solid #e0e0f0',
+                        borderRadius: 4,
+                        cursor: 'pointer',
+                        fontSize: 11,
+                        color: MUTED,
+                      }}
+                    >
+                      Clear
+                    </button>
+                  )}
+                  {/* Delete button - only for non-main sessions */}
+                  {session.slug !== 'main' && (
+                    <button
+                      onClick={() => handleDeleteSession(session.slug, session.name)}
+                      title="Delete session"
+                      style={{
+                        padding: '6px 10px',
+                        background: '#fff',
+                        border: '1px solid #ffcccc',
+                        borderRadius: 4,
+                        cursor: 'pointer',
+                        fontSize: 11,
+                        color: '#cc4444',
+                      }}
+                    >
+                      Delete
+                    </button>
+                  )}
+                </div>
               </motion.div>
             ))
           )}
