@@ -26,6 +26,10 @@ function getDocumentPath(profileSlug: string, docId: string): string {
   return path.join(getDocumentsPath(profileSlug), `${docId}.json`)
 }
 
+function generateId(): string {
+  return Date.now().toString(36) + '-' + Math.random().toString(36).substring(2, 10)
+}
+
 class DocumentsStore {
   private profileSlug: string = ''
 
@@ -83,7 +87,7 @@ class DocumentsStore {
     
     this.ensureDir()
     
-    const id = Date.now().toString(36) + Math.random().toString(36).substr(2)
+    const id = generateId()
     const now = new Date().toISOString()
     
     const newDoc: Document = {
@@ -144,8 +148,10 @@ class DocumentsStore {
   }
 }
 
-// Singleton instance
-export const documentsStore = new DocumentsStore()
+// Create singleton instance
+const documentsStore = new DocumentsStore()
+
+export { documentsStore }
 
 // Expose to global for tool access
-(global as any).documentsStore = documentsStore
+;(global as unknown as { documentsStore: DocumentsStore }).documentsStore = documentsStore

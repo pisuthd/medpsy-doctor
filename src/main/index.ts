@@ -2,7 +2,7 @@ import { app, shell, BrowserWindow, ipcMain, Menu, MenuItemConstructorOptions } 
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { profileStore, Profile } from './profileStore'
+import { profileStore } from './profileStore'
 import { registerSessionsIpcHandlers, initSessions } from './sessions'
 import { registerDocumentsHandlers } from './tools/documents'
 

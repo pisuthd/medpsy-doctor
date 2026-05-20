@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 
 const BLUE = '#1A1AE8'
-const TEAL = '#3EC4C0'
 const NAVY = '#0a0a5c'
 const MUTED = '#9999bb'
 const LIGHT_BLUE = '#f7f7fc'
@@ -98,10 +97,11 @@ function ToolCard({ tool, onToggle }: { tool: Tool; onToggle: () => void }) {
 
 export default function Tools() {
   const [tools, setTools] = useState<Tool[]>([
-    { id: '1', name: 'Clinic Scheduling', description: 'Schedule appointments with local clinics directly from chat', enabled: false, status: 'available' },
-    { id: '2', name: 'Medication Reminders', description: 'Set reminders for taking medications', enabled: false, status: 'available' },
-    { id: '3', name: 'Health Records', description: 'Connect to your electronic health records', enabled: false, status: 'coming_soon' },
-    { id: '4', name: 'Emergency Contacts', description: 'Quick access to emergency services and contacts', enabled: false, status: 'coming_soon' },
+    { id: '1', name: 'Documents', description: 'Upload medical documents, notes, and PDFs. AI can read and reference them in conversations.', enabled: true, status: 'available' },
+    { id: '2', name: 'Clinic Scheduling', description: 'Schedule appointments with local clinics directly from chat', enabled: false, status: 'coming_soon' },
+    { id: '3', name: 'Medication Reminders', description: 'Set reminders for taking medications', enabled: false, status: 'coming_soon' },
+    { id: '4', name: 'Health Records', description: 'Connect to your electronic health records', enabled: false, status: 'coming_soon' },
+    { id: '5', name: 'Emergency Contacts', description: 'Quick access to emergency services and contacts', enabled: false, status: 'coming_soon' },
   ])
 
   const toggleTool = (id: string) => {
