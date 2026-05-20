@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { ProfileProvider, Profile } from './context/ProfileContext'
 import LoadingScreen from './pages/LoadingScreen'
 import ProfileSelector from './pages/ProfileSelector'
 import MainLayout from './components/MainLayout'
@@ -8,15 +9,6 @@ import Sessions from './pages/Sessions'
 import Chat from './pages/Chat'
 import Documents from './pages/Documents'
 import Tools from './pages/Tools'
-
-interface Profile {
-  id: string
-  name: string
-  type: 'self' | 'family' | 'doctor' | 'community'
-  age?: number
-  gender?: 'male' | 'female'
-  createdAt: string
-}
 
 function App() {
   const [appState, setAppState] = useState<'loading' | 'profile' | 'main'>('loading')
@@ -71,16 +63,18 @@ function App() {
       )}
       
       {appState === 'main' && profile && (
-        <Routes>
-          <Route path="/" element={<MainLayout profile={profile} />}>
-            <Route index element={<Dashboard />} />
-            <Route path="sessions" element={<Sessions />} />
-            <Route path="chat" element={<Chat />} />
-            <Route path="documents" element={<Documents />} />
-            <Route path="tools" element={<Tools />} />
-          </Route>
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+        <ProfileProvider initialProfile={profile}>
+          <Routes>
+            <Route path="/" element={<MainLayout profile={profile} />}>
+              <Route index element={<Dashboard />} />
+              <Route path="sessions" element={<Sessions />} />
+              <Route path="chat" element={<Chat />} />
+              <Route path="documents" element={<Documents />} />
+              <Route path="tools" element={<Tools />} />
+            </Route>
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </ProfileProvider>
       )}
     </HashRouter>
   )

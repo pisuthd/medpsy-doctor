@@ -21,6 +21,9 @@
 - [x] **Phase 3** QVAC AI model loading with download support
 - [x] **Phase 3.1** Fire-and-forget model loading, simplified uptime
 - [x] **Phase 4** Sessions + Chat + AI integration
+- [x] **Phase 4.1** Model loading on startup, LoadingScreen simplified
+- [x] **Phase 4.2** ProfileContext for global state, session dropdown fix
+- [x] **Phase 4.3** Thinking box above response, trim leading \n
 
 ## What's Left to Build
 - [ ] RAG implementation for document analysis
@@ -32,6 +35,8 @@
 - Session storage: `{userData}/profiles/{profileSlug}/sessions/{sessionSlug}/messages.json`
 - Chat supports session params (`?session=slug`), defaults to `main`
 - AI streaming with thinking box display
+- ProfileContext for global profile state
+- Thinking box now above response, leading \n trimmed
 
 ## Known Issues
 - None identified
@@ -55,3 +60,5 @@
 - 2026-05-20: Phase 3.1 - Fire-and-forget model loading, simplified uptime
 - 2026-05-20: Phase 4 - Sessions + Chat + AI integration
 - 2026-05-20: Phase 4.1 - Model loading on startup, LoadingScreen simplified
+- 2026-05-20: Phase 4.2 - ProfileContext, session dropdown fix, new session modal
+- 2026-05-20: Phase 4.3 - Thinking box above response, trim leading \n

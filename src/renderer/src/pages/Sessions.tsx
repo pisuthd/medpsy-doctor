@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { useProfile } from '../context/ProfileContext'
 
 const BLUE = '#1A1AE8'
 const TEAL = '#3EC4C0'
@@ -42,21 +43,20 @@ function formatDate(isoString: string): string {
 
 export default function Sessions() {
   const navigate = useNavigate()
+  const { profile } = useProfile()
   const [sessions, setSessions] = useState<Session[]>([])
   const [loading, setLoading] = useState(true)
 
-  // Load sessions on mount (after getting profile)
+  // Load sessions on mount
   useEffect(() => {
-    const loadSessions = async () => {
-      const savedProfileId = localStorage.getItem('currentProfileId')
-      
-      if (!savedProfileId) {
-        setLoading(false)
-        return
-      }
+    if (!profile) {
+      setLoading(false)
+      return
+    }
 
+    const loadSessions = async () => {
       try {
-        const list = await window.api.sessions.list(savedProfileId)
+        const list = await window.api.sessions.list(profile.id)
         setSessions(list)
       } catch (error) {
         console.error('Failed to load sessions:', error)
@@ -66,7 +66,7 @@ export default function Sessions() {
     }
 
     loadSessions()
-  }, [])
+  }, [profile])
 
   const handleSessionClick = (slug: string) => {
     navigate(`/chat?session=${slug}`)

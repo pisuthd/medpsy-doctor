@@ -93,7 +93,7 @@ export function listSessions(profileSlug: string): Session[] {
 
       // Get creation time from folder
       const stats = fs.statSync(path.join(sessionsPath, entry.name))
-      const name = entry.name === 'main' ? 'Main Session' : entry.name
+      const name = entry.name === 'main' ? 'Main (Default)' : entry.name
 
       return {
         slug: entry.name,

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
-import { useSearchParams, useNavigate } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { useProfile } from '../context/ProfileContext'
 
 const BLUE = '#1A1AE8'
 const TEAL = '#3EC4C0'
@@ -35,8 +36,8 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 }
 
 export default function Chat() {
+  const { profile } = useProfile()
   const [searchParams, setSearchParams] = useSearchParams()
-  const navigate = useNavigate()
   const sessionSlug = searchParams.get('session') || 'main'
   
   const [messages, setMessages] = useState<ChatMessage[]>([])
@@ -46,6 +47,8 @@ export default function Chat() {
   const [streamingThinking, setStreamingThinking] = useState('')
   const [sessions, setSessions] = useState<Session[]>([])
   const [showSessionDropdown, setShowSessionDropdown] = useState(false)
+  const [showNewSessionModal, setShowNewSessionModal] = useState(false)
+  const [newSessionName, setNewSessionName] = useState('')
   
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
@@ -53,12 +56,11 @@ export default function Chat() {
 
   // Load sessions for dropdown
   useEffect(() => {
+    if (!profile) return
+    
     const loadSessions = async () => {
-      const profileId = localStorage.getItem('currentProfileId')
-      if (!profileId) return
-      
       try {
-        const list = await window.api.sessions.list(profileId)
+        const list = await window.api.sessions.list(profile.id)
         setSessions(list)
       } catch (error) {
         console.error('Failed to load sessions:', error)
@@ -66,16 +68,15 @@ export default function Chat() {
     }
     
     loadSessions()
-  }, [])
+  }, [profile])
 
   // Load messages for session
   useEffect(() => {
-    const profileId = localStorage.getItem('currentProfileId')
-    if (!profileId) return
+    if (!profile) return
 
     const loadMessages = async () => {
       try {
-        const msgs = await window.api.sessions.loadMessages(profileId, sessionSlug)
+        const msgs = await window.api.sessions.loadMessages(profile.id, sessionSlug)
         setMessages(msgs)
       } catch (error) {
         console.error('Failed to load messages:', error)
@@ -83,7 +84,7 @@ export default function Chat() {
     }
 
     loadMessages()
-  }, [sessionSlug])
+  }, [profile, sessionSlug])
 
   // Set up streaming listeners
   useEffect(() => {
@@ -145,9 +146,32 @@ export default function Chat() {
     setShowSessionDropdown(false)
   }
 
+  const handleCreateSession = async () => {
+    if (!newSessionName.trim() || !profile) return
+
+    // Convert name to slug
+    const slug = newSessionName
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+
+    try {
+      await window.api.sessions.create(profile.id, slug)
+      setNewSessionName('')
+      setShowNewSessionModal(false)
+      setShowSessionDropdown(false)
+      
+      // Refresh sessions list and navigate to new session
+      const list = await window.api.sessions.list(profile.id)
+      setSessions(list)
+      setSearchParams({ session: slug })
+    } catch (error) {
+      console.error('Failed to create session:', error)
+    }
+  }
+
   const handleSend = async () => {
-    const profileId = localStorage.getItem('currentProfileId')
-    if (!input.trim() || loading || !profileId) return
+    if (!input.trim() || loading || !profile) return
 
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
@@ -171,7 +195,7 @@ export default function Chat() {
     }))
 
     try {
-      await window.api.ai.sendMessage(profileId, sessionSlug, userMessage.content, history)
+      await window.api.ai.sendMessage(profile.id, sessionSlug, userMessage.content, history)
     } catch (error) {
       console.error('Failed to send message:', error)
       setLoading(false)
@@ -236,12 +260,13 @@ export default function Chat() {
                   background: '#fff',
                   border: '1px solid #e0e0f0',
                   borderRadius: 8,
-                  minWidth: 200,
+                  minWidth: 220,
                   boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
                   zIndex: 100,
                   overflow: 'hidden',
                 }}
               >
+                {/* Session List */}
                 {sessions.map((session) => (
                   <div
                     key={session.slug}
@@ -260,11 +285,119 @@ export default function Chat() {
                     </span>
                   </div>
                 ))}
+                
+                {/* New Session Button */}
+                <div
+                  onClick={() => {
+                    setShowNewSessionModal(true)
+                    setShowSessionDropdown(false)
+                  }}
+                  style={{
+                    padding: '12px 16px',
+                    cursor: 'pointer',
+                    background: 'transparent',
+                    borderTop: '1px solid #e0e0f0',
+                    marginTop: 4,
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = LIGHT_BLUE}
+                  onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                >
+                  <span style={{ fontFamily: monoFont, fontSize: 11, color: BLUE, fontWeight: 700 }}>
+                    + NEW SESSION
+                  </span>
+                </div>
               </motion.div>
             )}
           </div>
         </div>
       </div>
+
+      {/* New Session Modal */}
+      {showNewSessionModal && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0,0,0,0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 200,
+          }}
+          onClick={() => setShowNewSessionModal(false)}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: '#fff',
+              borderRadius: 12,
+              padding: 24,
+              width: 360,
+            }}
+          >
+            <h3 style={{ fontFamily: sansFont, fontSize: 18, fontWeight: 500, color: NAVY, margin: '0 0 16px 0' }}>
+              New Session
+            </h3>
+            <input
+              type="text"
+              value={newSessionName}
+              onChange={(e) => setNewSessionName(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleCreateSession()}
+              placeholder="Session name"
+              autoFocus
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                border: '1px solid #e0e0f0',
+                borderRadius: 8,
+                fontSize: 14,
+                fontFamily: sansFont,
+                outline: 'none',
+                marginBottom: 16,
+              }}
+            />
+            <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end' }}>
+              <button
+                onClick={() => setShowNewSessionModal(false)}
+                style={{
+                  padding: '10px 20px',
+                  background: '#fff',
+                  border: '1px solid #e0e0f0',
+                  borderRadius: 8,
+                  color: MUTED,
+                  fontFamily: monoFont,
+                  fontSize: 11,
+                  cursor: 'pointer',
+                }}
+              >
+                CANCEL
+              </button>
+              <button
+                onClick={handleCreateSession}
+                disabled={!newSessionName.trim()}
+                style={{
+                  padding: '10px 20px',
+                  background: newSessionName.trim() ? BLUE : MUTED,
+                  border: 'none',
+                  borderRadius: 8,
+                  color: '#fff',
+                  fontFamily: monoFont,
+                  fontWeight: 700,
+                  fontSize: 11,
+                  cursor: newSessionName.trim() ? 'pointer' : 'not-allowed',
+                }}
+              >
+                CREATE
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
 
       {/* Messages */}
       <div style={{ flex: 1, overflow: 'auto', padding: '24px 32px' }}>
@@ -287,24 +420,11 @@ export default function Chat() {
               alignItems: message.role === 'user' ? 'flex-end' : 'flex-start',
             }}
           >
-            <div
-              style={{
-                maxWidth: '70%',
-                padding: '12px 16px',
-                borderRadius: 12,
-                background: message.role === 'user' ? BLUE : '#fff',
-                color: message.role === 'user' ? '#fff' : NAVY,
-                border: message.role === 'user' ? 'none' : '1px solid #e0e0f0',
-              }}
-            >
-              <p style={{ margin: 0, fontSize: 14, whiteSpace: 'pre-wrap' }}>{message.content}</p>
-            </div>
-            
-            {/* Thinking box for assistant */}
+            {/* Thinking box for assistant - ABOVE response */}
             {message.role === 'assistant' && message.thinking && (
               <div
                 style={{
-                  marginTop: 8,
+                  marginBottom: 8,
                   maxWidth: '70%',
                   padding: '8px 12px',
                   borderRadius: 8,
@@ -317,9 +437,22 @@ export default function Chat() {
                 <p style={{ margin: 0, fontFamily: monoFont, fontSize: 10, textTransform: 'uppercase', marginBottom: 4 }}>
                   Thinking...
                 </p>
-                <p style={{ margin: 0, fontSize: 12, whiteSpace: 'pre-wrap' }}>{message.thinking}</p>
+                <p style={{ margin: 0, fontSize: 12, whiteSpace: 'pre-wrap' }}>{message.thinking.trimStart()}</p>
               </div>
             )}
+            
+            <div
+              style={{
+                maxWidth: '70%',
+                padding: '12px 16px',
+                borderRadius: 12,
+                background: message.role === 'user' ? BLUE : '#fff',
+                color: message.role === 'user' ? '#fff' : NAVY,
+                border: message.role === 'user' ? 'none' : '1px solid #e0e0f0',
+              }}
+            >
+              <p style={{ margin: 0, fontSize: 14, whiteSpace: 'pre-wrap' }}>{message.content.trimStart()}</p>
+            </div>
           </motion.div>
         ))}
 
@@ -330,27 +463,11 @@ export default function Chat() {
             animate={{ opacity: 1, y: 0 }}
             style={{ marginBottom: 24 }}
           >
-            <div
-              style={{
-                maxWidth: '70%',
-                padding: '12px 16px',
-                borderRadius: 12,
-                background: '#fff',
-                border: '1px solid #e0e0f0',
-              }}
-            >
-              {streamingContent ? (
-                <p style={{ margin: 0, fontSize: 14, whiteSpace: 'pre-wrap' }}>{streamingContent}</p>
-              ) : (
-                <p style={{ margin: 0, fontSize: 14, color: MUTED }}>Thinking...</p>
-              )}
-            </div>
-            
-            {/* Streaming thinking */}
+            {/* Streaming thinking - ABOVE response */}
             {streamingThinking && (
               <div
                 style={{
-                  marginTop: 8,
+                  marginBottom: 8,
                   maxWidth: '70%',
                   padding: '8px 12px',
                   borderRadius: 8,
@@ -362,10 +479,27 @@ export default function Chat() {
                   Thinking...
                 </p>
                 <p style={{ margin: '4px 0 0 0', fontSize: 12, whiteSpace: 'pre-wrap', color: MUTED }}>
-                  {streamingThinking}
+                  {streamingThinking.trimStart()}
                 </p>
               </div>
             )}
+            
+            {/* Response content */}
+            <div
+              style={{
+                maxWidth: '70%',
+                padding: '12px 16px',
+                borderRadius: 12,
+                background: '#fff',
+                border: '1px solid #e0e0f0',
+              }}
+            >
+              {streamingContent ? (
+                <p style={{ margin: 0, fontSize: 14, whiteSpace: 'pre-wrap' }}>{streamingContent.trimStart()}</p>
+              ) : (
+                <p style={{ margin: 0, fontSize: 14, color: MUTED }}>Thinking...</p>
+              )}
+            </div>
           </motion.div>
         )}
 
