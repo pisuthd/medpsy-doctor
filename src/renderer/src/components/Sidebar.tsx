@@ -13,9 +13,7 @@ const navItems = [
   { path: '/chat', label: 'Chat', num: '01' },
   { path: '/', label: 'Dashboard', num: '02' },
   { path: '/sessions', label: 'Sessions', num: '03' },
-  { path: '/documents', label: 'Documents', num: '04' },
-  { path: '/settings', label: 'Settings', num: '05' },
-  { path: '/tools', label: 'Tools', num: '06' },
+  { path: '/settings', label: 'Settings', num: '04' },
 ]
 
 function Wordmark() {

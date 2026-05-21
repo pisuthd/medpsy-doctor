@@ -14,6 +14,7 @@ const api = {
     getStatus: () => ipcRenderer.invoke('ai:getStatus'),
     load: () => ipcRenderer.invoke('ai:load'),
     unload: () => ipcRenderer.invoke('ai:unload'),
+    reload: () => ipcRenderer.invoke('ai:reload'),
     
     // Chat streaming
     sendMessage: (profileSlug, sessionSlug, message, history) => 

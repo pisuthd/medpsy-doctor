@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 
 const BLUE = '#1A1AE8'
 const TEAL = '#3EC4C0'
@@ -10,7 +11,7 @@ const LIGHT_BLUE = '#f7f7fc'
 const monoFont = "'Space Mono', monospace"
 const sansFont = "'DM Sans', sans-serif"
 
-type Tab = 'ai' | 'tools' | 'about'
+type Tab = 'ai' | 'about'
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
@@ -20,106 +21,24 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   )
 }
 
-interface Tool {
-  id: string
-  name: string
-  description: string
-  enabled: boolean
-  status: 'available' | 'coming_soon'
-}
-
-function ToolCard({ tool, onToggle }: { tool: Tool; onToggle: () => void }) {
-  return (
-    <div
-      style={{
-        padding: '20px',
-        background: '#fff',
-        border: '1px solid #e0e0f0',
-        borderRadius: 8,
-        display: 'flex',
-        alignItems: 'flex-start',
-        justifyContent: 'space-between',
-        gap: 16,
-        opacity: tool.status === 'coming_soon' ? 0.6 : 1,
-      }}
-    >
-      <div style={{ flex: 1 }}>
-        <h3 style={{ fontFamily: sansFont, fontSize: 15, fontWeight: 500, color: NAVY, margin: '0 0 4px 0' }}>{tool.name}</h3>
-        <p style={{ fontFamily: sansFont, fontSize: 13, color: MUTED, margin: 0 }}>{tool.description}</p>
-        {tool.status === 'coming_soon' && (
-          <span
-            style={{
-              display: 'inline-block',
-              marginTop: 8,
-              padding: '4px 8px',
-              background: LIGHT_BLUE,
-              fontFamily: monoFont,
-              fontSize: 9,
-              color: MUTED,
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-            }}
-          >
-            Coming Soon
-          </span>
-        )}
-      </div>
-
-      <button
-        onClick={onToggle}
-        disabled={tool.status === 'coming_soon'}
-        style={{
-          width: 44,
-          height: 24,
-          background: tool.enabled ? BLUE : '#e0e0f0',
-          borderRadius: 12,
-          border: 'none',
-          position: 'relative',
-          cursor: tool.status === 'available' ? 'pointer' : 'not-allowed',
-          transition: 'background 0.2s',
-          flexShrink: 0,
-        }}
-      >
-        <span
-          style={{
-            position: 'absolute',
-            top: 2,
-            left: tool.enabled ? 22 : 2,
-            width: 20,
-            height: 20,
-            background: '#fff',
-            borderRadius: '50%',
-            transition: 'left 0.2s',
-          }}
-        />
-      </button>
-    </div>
-  )
-}
-
 export default function Settings() {
   const [activeTab, setActiveTab] = useState<Tab>('ai')
   const [ctxSize, setCtxSize] = useState(4096)
-  const [tools, setTools] = useState<Tool[]>([])
-  const [loading, setLoading] = useState(true)
+  const [isReloading, setIsReloading] = useState(false)
+  const [reloadError, setReloadError] = useState('')
+  const navigate = useNavigate()
 
-  // Load settings and tools on mount
+  // Load settings on mount
   useEffect(() => {
-    const loadData = async () => {
+    const loadSettings = async () => {
       try {
-        const [settings, loadedTools] = await Promise.all([
-          window.api.settings.get(),
-          window.api.tools.getAll(),
-        ])
+        const settings = await window.api.settings.get()
         setCtxSize(settings.ctx_size)
-        setTools(loadedTools)
       } catch (error) {
         console.error('Failed to load settings:', error)
-      } finally {
-        setLoading(false)
       }
     }
-    loadData()
+    loadSettings()
   }, [])
 
   const handleCtxSizeChange = async (newSize: number) => {
@@ -131,25 +50,27 @@ export default function Settings() {
     }
   }
 
-  const toggleTool = async (id: string) => {
-    const tool = tools.find(t => t.id === id)
-    if (!tool || tool.status !== 'available') return
-
-    const newEnabled = !tool.enabled
+  const handleReloadModel = async () => {
+    setIsReloading(true)
+    setReloadError('')
     
     try {
-      await window.api.tools.setEnabled(id, newEnabled)
-      setTools(prev => prev.map(t => 
-        t.id === id ? { ...t, enabled: newEnabled } : t
-      ))
+      const result = await window.api.ai.reload()
+      if (result.success) {
+        // Model reloaded successfully, navigate to chat
+        navigate('/chat')
+      } else {
+        setReloadError(result.error || 'Failed to reload model')
+      }
     } catch (error) {
-      console.error('Failed to toggle tool:', error)
+      setReloadError(error instanceof Error ? error.message : 'Unknown error')
+    } finally {
+      setIsReloading(false)
     }
   }
 
   const tabs: { id: Tab; label: string }[] = [
     { id: 'ai', label: 'AI Settings' },
-    { id: 'tools', label: 'Tools' },
     { id: 'about', label: 'About' },
   ]
 
@@ -238,6 +159,53 @@ export default function Settings() {
               </p>
             </div>
 
+            {/* Reload Model Button */}
+            <div style={{ marginBottom: 24 }}>
+              <p style={{ fontFamily: sansFont, fontSize: 14, color: MUTED, marginBottom: 16 }}>
+                After changing context size, reload the model to apply the new setting.
+              </p>
+              
+              {reloadError && (
+                <div
+                  style={{
+                    padding: '12px 16px',
+                    background: '#fff0f0',
+                    border: '1px solid #ffcccc',
+                    borderRadius: 8,
+                    marginBottom: 16,
+                  }}
+                >
+                  <p style={{ fontFamily: monoFont, fontSize: 11, color: '#cc0000', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 4 }}>
+                    Error
+                  </p>
+                  <p style={{ fontFamily: sansFont, fontSize: 13, color: '#660000', margin: 0 }}>
+                    {reloadError}
+                  </p>
+                </div>
+              )}
+              
+              <button
+                onClick={handleReloadModel}
+                disabled={isReloading}
+                style={{
+                  padding: '12px 24px',
+                  background: isReloading ? MUTED : BLUE,
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: 8,
+                  fontFamily: monoFont,
+                  fontSize: 12,
+                  fontWeight: 500,
+                  cursor: isReloading ? 'not-allowed' : 'pointer',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  transition: 'all 0.2s',
+                }}
+              >
+                {isReloading ? 'Reloading...' : 'Reload Model'}
+              </button>
+            </div>
+
             <div
               style={{
                 padding: 20,
@@ -247,41 +215,9 @@ export default function Settings() {
               }}
             >
               <p style={{ fontFamily: sansFont, fontSize: 13, color: MUTED, margin: 0 }}>
-                <strong>Note:</strong> Changing context size requires a model reload to take effect. The model will automatically reload when you restart the app.
+                <strong>Note:</strong> Reloading the model will apply your new context size setting. The app will navigate to Chat when ready.
               </p>
             </div>
-          </motion.div>
-        )}
-
-        {/* Tools Tab */}
-        {activeTab === 'tools' && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <SectionLabel>Tools</SectionLabel>
-            <h1 style={{ fontFamily: sansFont, fontSize: 28, fontWeight: 300, color: NAVY, margin: '0 0 32px 0', lineHeight: 1.2 }}>
-              <strong style={{ fontWeight: 500 }}>Enable</strong> integrations
-            </h1>
-
-            {loading ? (
-              <div style={{ padding: 24, textAlign: 'center', color: MUTED }}>
-                Loading...
-              </div>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                {tools.map((tool, index) => (
-                  <motion.div
-                    key={tool.id}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                  >
-                    <ToolCard tool={tool} onToggle={() => toggleTool(tool.id)} />
-                  </motion.div>
-                ))}
-              </div>
-            )}
           </motion.div>
         )}
 

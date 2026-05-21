@@ -286,6 +286,34 @@ app.whenReady().then(async () => {
     return { success: true }
   })
 
+  // Model reload handler
+  ipcMain.handle('ai:reload', async () => {
+    try {
+      console.log('[AI] Reloading model...')
+      
+      // Unload existing model if loaded
+      if (modelId) {
+        await unloadModel({ modelId })
+        modelId = null
+        modelStartTime = null
+        console.log('[AI] Model unloaded')
+      }
+      
+      // Reload with current settings
+      const success = await loadAIModel()
+      
+      if (success) {
+        return { success: true, status: getAIStatus() }
+      } else {
+        return { success: false, error: 'Failed to reload model' }
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error'
+      console.error('[AI] Reload failed:', message)
+      return { success: false, error: message }
+    }
+  })
+
   // Profile IPC handlers
   ipcMain.handle('profiles:getAll', () => {
     return profileStore.getAll()

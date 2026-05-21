@@ -7,9 +7,7 @@ import MainLayout from './components/MainLayout'
 import Dashboard from './pages/Dashboard'
 import Sessions from './pages/Sessions'
 import Chat from './pages/Chat'
-import Documents from './pages/Documents'
 import Settings from './pages/Settings'
-import Tools from './pages/Tools'
 
 function App() {
   const [appState, setAppState] = useState<'loading' | 'profile' | 'main'>('loading')
@@ -70,9 +68,7 @@ function App() {
               <Route index element={<Dashboard />} />
               <Route path="sessions" element={<Sessions />} />
               <Route path="chat" element={<Chat />} />
-              <Route path="documents" element={<Documents />} />
               <Route path="settings" element={<Settings />} />
-              <Route path="tools" element={<Tools />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

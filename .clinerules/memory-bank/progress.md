@@ -30,9 +30,15 @@
 - [x] **Phase 5.2** Tools persistence + system prompt for AI
 - [x] **Phase 5.3** Tool call handling loop (like everclaw)
 - [x] **Phase 5.4** Fix profile for documentsStore in tool calls
+- [x] **Phase 6** Settings page + LoadingScreen reload
+  - [x] Settings page with side-tab layout (AI, Tools, About)
+  - [x] ctx_size selector (2048, 4096, 8192)
+  - [x] LoadingScreen error state with reload button
+  - [x] settingsStore for persistent settings
 
 ## What's Left to Build
 - [ ] RAG implementation with embeddings (future)
+- [ ] Model reload when ctx_size changes
 
 ## Current Status
 - Phase 5: AI Tools with document access working

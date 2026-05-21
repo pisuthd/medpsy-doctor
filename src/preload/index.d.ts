@@ -53,6 +53,7 @@ export interface ProfileAPI {
     getStatus: () => Promise<AIStatus>
     load: () => Promise<{ success: boolean; status?: AIStatus; error?: string }>
     unload: () => Promise<{ success: boolean; error?: string }>
+    reload: () => Promise<{ success: boolean; status?: AIStatus; error?: string }>
     sendMessage: (profileSlug: string, sessionSlug: string, message: string, history: ChatMessage[]) => Promise<{ success: boolean; error?: string }>
     onDownloadProgress: (callback: (progress: number) => void) => () => void
     onLoadProgress: (callback: (msg: string) => void) => () => void
