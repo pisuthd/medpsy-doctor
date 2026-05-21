@@ -48,23 +48,10 @@ export default function Chat() {
   const [showSessionDropdown, setShowSessionDropdown] = useState(false)
   const [showNewSessionModal, setShowNewSessionModal] = useState(false)
   const [newSessionName, setNewSessionName] = useState('')
-  const [modalKey, setModalKey] = useState(0)
-  const [modalInputRef, setModalInputRef] = useState<HTMLInputElement | null>(null)
   
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
-
-  // Focus modal input when modal opens
-  useEffect(() => {
-    if (showNewSessionModal && modalInputRef) {
-      // Small delay to ensure DOM is ready
-      setTimeout(() => {
-        modalInputRef.focus()
-        modalInputRef.select()
-      }, 50)
-    }
-  }, [showNewSessionModal, modalInputRef])
 
   // Reset modal state when session changes
   useEffect(() => {
@@ -158,6 +145,18 @@ export default function Chat() {
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
+
+  // Focus modal input using document.getElementById
+  useEffect(() => {
+    if (showNewSessionModal) {
+      setTimeout(() => {
+        const input = document.getElementById('modal-session-input')
+        if (input) {
+          input.focus()
+        }
+      }, 100)
+    }
+  }, [showNewSessionModal])
 
   const handleSessionChange = (slug: string) => {
     setSearchParams({ session: slug })
@@ -257,7 +256,6 @@ export default function Chat() {
               whileTap={{ scale: 0.98 }}
               onClick={() => {
                 setNewSessionName('')
-                setModalKey(k => k + 1)
                 setShowNewSessionModal(true)
               }}
               style={{
@@ -362,10 +360,7 @@ export default function Chat() {
           }}
           onClick={() => setShowNewSessionModal(false)}
         >
-          <motion.div
-            key={modalKey}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
+          <div
             onClick={(e) => e.stopPropagation()}
             style={{
               background: '#fff',
@@ -378,13 +373,12 @@ export default function Chat() {
               New Session
             </h3>
             <input
+              id="modal-session-input"
               type="text"
-              ref={(el) => setModalInputRef(el)}
               value={newSessionName}
               onChange={(e) => setNewSessionName(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleCreateSession()}
               placeholder="Session name"
-              autoFocus
               style={{
                 width: '100%',
                 padding: '12px 16px',
@@ -414,7 +408,6 @@ export default function Chat() {
               </button>
               <button
                 onClick={handleCreateSession}
-                disabled={!newSessionName.trim()}
                 style={{
                   padding: '10px 20px',
                   background: newSessionName.trim() ? BLUE : MUTED,
@@ -430,7 +423,7 @@ export default function Chat() {
                 CREATE
               </button>
             </div>
-          </motion.div>
+          </div>
         </div>
       )}
 
