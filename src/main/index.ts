@@ -177,6 +177,8 @@ function createWindow(): void {
     }
   })
 
+   mainWindow.setMenuBarVisibility(false)
+
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
   })
