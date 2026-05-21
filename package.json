@@ -4,7 +4,7 @@
   "description": "Private & On-Device AI Health Assistant - Chat with AI, upload documents, enable tools for medical consultations",
   "main": "./out/main/index.js",
   "author": "Pisuth D.",
-  "homepage": "https://github.com/pisuthd/my-doctor-ai",
+  "homepage": "https://github.com/pisuthd/medpsy-doctor",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint --cache .",

@@ -15,7 +15,7 @@ import { loadModel, unloadModel, completion, type ToolCall } from '@qvac/sdk'
 import { saveMessages, loadMessages, ensureMainSession } from './sessions'
 
 const MODEL_FILE = 'medpsy-1.7b-q4_k_m-imat.gguf'
-const MODEL_URL = 'https://github.com/pisuthd/my-doctor-ai/releases/download/v.0.1.0/medpsy-1.7b-q4_k_m-imat.gguf'
+const MODEL_URL = 'https://github.com/pisuthd/medpsy-doctor/releases/download/v.0.1.0/medpsy-1.7b-q4_k_m-imat.gguf'
 
 interface AIStatus {
   isReady: boolean
@@ -213,7 +213,7 @@ function createDefaultMenu(): void {
           label: 'About MedPsy Doctor',
           click: async () => {
             const { shell } = await import('electron')
-            await shell.openExternal('https://github.com/pisuthd/my-doctor-ai')
+            await shell.openExternal('https://github.com/pisuthd/medpsy-doctor')
           }
         }
       ]

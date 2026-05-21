@@ -1,90 +1,91 @@
-# MedPsy Doctor
+# MedPsy Doctor - QVAC MedPsy Desktop Application
 
-A desktop application for AI-powered medical consultations with local privacy. Your health data stays on your device.
+A free, open-source desktop application for QVAC MedPsy - the medical language model launched by Tether AI. Try the latest on-device AI medical assistant on your computer.
 
 ![Electron](https://img.shields.io/badge/Electron-191970?style=flat-square&logo=electron)
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat-square&logo=typescript)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
 
-## Features
+## 🎯 What is QVAC MedPsy?
 
-### 💬 AI Chat
-- Chat with a local AI medical assistant
-- Multiple conversation sessions
-- Streaming responses with thinking display
-- Context-aware responses based on your profile
+**QVAC MedPsy** is a cutting-edge medical language model from Tether AI (launched May 2025), designed to run directly on devices with limited processing power. This desktop app brings QVAC MedPsy to your Windows, Mac, or Linux computer with a user-friendly interface.
 
-### 👨‍👩‍👧‍👦 Profile System
-- Support for multiple family members or community users
-- Personalized context (age, gender, role)
-- Separate data storage per profile
+### Why Use This App?
 
-### 📄 Documents
-- Upload medical documents via drag & drop
-- OCR support for image files
-- Quick notes for personal health records
-- AI can search and reference your documents
+- ✅ **Try QVAC MedPsy immediately** - No mobile device required
+- ✅ **100% Offline** - Your health data never leaves your device
+- ✅ **No subscription** - Free and open source
+- ✅ **Privacy-first** - Local AI processing, no cloud
+- ✅ **Document support** - Upload medical records for AI analysis
 
-### 🔧 Tools & Integrations
-- Enable/disable AI tools from Settings
-- Document search tools for AI
-- Extensible tool system for future integrations
-
-### 🔒 Privacy First
-- All AI processing happens locally
-- Your health data never leaves your device
-- Local model: Medpsy-1.7B (medical AI)
-
-## Tech Stack
-
-- **Framework**: Electron + electron-vite
-- **Frontend**: React 19 + TypeScript
-- **AI**: QVAC SDK with local GGUF model
-- **Styling**: Inline design system (blue gradient theme)
-- **Animations**: Framer Motion
-- **Drag & Drop**: @dnd-kit
-
-## Getting Started
+## 🚀 Quick Start
 
 ### Prerequisites
-
 - Node.js 18+
 - Windows, macOS, or Linux
-- ~2GB disk space for AI model
+- ~2GB disk space
 
 ### Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/pisuthd/my-doctor-ai.git
+git clone https://github.com/pisuthd/medpsy-doctor.git
 cd medpsy-doctor
 
 # Install dependencies
 npm install
-```
 
-### Development
-
-```bash
-# Start development server with hot reload
+# Start development server
 npm run dev
+
+# Build for your platform
+npm run build:win    # Windows
+npm run build:mac    # macOS
+npm run build:linux  # Linux
 ```
 
-### Build
+## ✨ Features
 
-```bash
-# Build for Windows
-npm run build:win
+### 💬 AI Chat with QVAC MedPsy
+- Chat naturally with the medical AI model
+- Streaming responses with AI thinking display
+- Multiple conversation sessions
+- Context-aware responses based on your profile
 
-# Build for macOS
-npm run build:mac
+### 👨‍👩‍👧‍👦 Profile System
+- Create profiles for yourself, family members, or community users
+- Personalized AI context (age, gender, role)
+- Separate data storage per profile
 
-# Build for Linux
-npm run build:linux
-```
+### 📄 Medical Documents
+- Upload medical documents via drag & drop
+- OCR support for image files (prescriptions, lab reports)
+- Quick notes for personal health records
+- AI can search and reference your documents
 
-## Project Structure
+### 🔒 Privacy Features
+- All AI processing happens **locally on your device**
+- Your health data **never leaves your computer**
+- No internet required after initial model download
+- No accounts, no tracking, no subscriptions
+
+## 📋 Tech Stack
+
+- **Framework**: Electron + electron-vite
+- **Frontend**: React 19 + TypeScript
+- **AI Engine**: QVAC SDK with local GGUF model
+- **Animations**: Framer Motion
+- **Styling**: Custom design system (blue gradient theme)
+
+## 🤖 AI Model
+
+This app uses the QVAC MedPsy medical AI model:
+- **Model**: Medpsy-1.7B (GGUF format)
+- **Download**: Automatic on first run (~1.5GB)
+- **Storage**: `{userData}/medpsy-1.7b-q4_k_m-imat.gguf`
+
+## 📁 Project Structure
 
 ```
 src/
@@ -104,17 +105,23 @@ src/
         └── App.tsx
 ```
 
-## AI Model
+## 📰 Related News
 
-The app uses a local medical AI model:
-- **Model**: Medpsy-1.7B (GGUF format)
-- **Download**: Automatic on first run
-- **Storage**: `{userData}/medpsy-1.7b-q4_k_m-imat.gguf`
+**AI Trends | Tether Launches Medical Language Model QVAC MedPsy** - Binance News (May 7, 2025)
 
-## License
+> The Tether AI research team just dropped QVAC MedPsy, a cutting-edge medical language model designed to run directly on smartphones, wearables, and other devices with limited processing power.
+
+This desktop application brings those capabilities to your computer with a polished UI and additional features.
+
+## 📄 License
 
 MIT License - See LICENSE file for details
 
-## Contributing
+## 🤝 Contributing
 
 Contributions welcome! Please feel free to submit issues and pull requests.
+
+## 🔗 Resources
+
+- [QVAC MedPsy Model](https://github.com/pisuthd/my-doctor-ai/releases) - Download the GGUF model
+- [QVAC SDK Documentation](https://www.npmjs.com/package/@qvac/sdk) - Learn about the AI SDK

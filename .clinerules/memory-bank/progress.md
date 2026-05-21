@@ -48,9 +48,15 @@
 
 ## AI Model Configuration
 - **Model file**: `medpsy-1.7b-q4_k_m-imat.gguf`
-- **Download URL**: `https://github.com/pisuthd/my-doctor-ai/releases/download/v.0.1.0/medpsy-1.7b-q4_k_m-imat.gguf`
+- **Download URL**: `https://github.com/pisuthd/medpsy-doctor/releases/download/v.0.1.0/medpsy-1.7b-q4_k_m-imat.gguf`
 - **Storage**: `{userData}/medpsy-1.7b-q4_k_m-imat.gguf`
 - **GitHub**: Ignored via `.gguf` pattern
+
+## Rebrand (2026-05-21)
+- Rebranded from MyDoctorAI to MedPsy Doctor
+- Updated GitHub URLs to medpsy-doctor repo
+- README rewritten with QVAC MedPsy SEO focus
+- References Tether AI launch (May 2025)
 
 ## Tool System
 - **Storage**: `{userData}/tools-config.json`
