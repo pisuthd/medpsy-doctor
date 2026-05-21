@@ -40,18 +40,22 @@
   - [x] Add model reload IPC handler (ai:reload)
   - [x] Reload Model button in Settings page
   - [x] Navigate to Chat after successful reload
+- [x] **Phase 7** Cleanup & UI improvements
+  - [x] **Phase 7.1** Profile context in system prompt
+  - [x] **Phase 7.2** Remove menubar, tools from prompt, simplify Settings
+  - [x] **Phase 7.3** Add Free & Open Source card on Dashboard
 
 ## What's Left to Build
 - [ ] RAG implementation with embeddings (future)
 
 ## Current Status
-- Phase 5: AI Tools with document access working
+- Phase 7 complete - cleanup and UI polish done
 - Model loads on app startup (download + load)
 - Documents page with drag & drop, OCR, quick notes
-- Tool system with persistence (tools-config.json)
-- Tools page with toggle switches (Documents available, others coming soon)
-- AI tool calls: `get_documents`, `search_documents`
-- Tool execution loop: completion() → stream → get toolCalls → execute → loop
+- Tool system exists but tools removed from prompts (Phase 7.2)
+- Simplified navigation: Chat, Dashboard, Sessions, Settings
+- Free & Open Source card on Dashboard
+- Profile context passed to AI for personalized responses
 
 ## Known Issues
 - None identified
@@ -68,20 +72,15 @@
 - README rewritten with QVAC MedPsy SEO focus
 - References Tether AI launch (May 2025)
 
-## Tool System
-- **Storage**: `{userData}/tools-config.json`
-- **Tools**:
-  - Documents (id: "1") - Available, enables get_documents + search_documents tools
-  - Scheduling (id: "2") - Coming Soon
-  - Pharmacy (id: "3") - Coming Soon
-- **Tool call flow**:
-  1. Call completion() with tools array
-  2. Stream events (contentDelta, thinkingDelta, toolCall)
-  3. Get result.toolCalls after streaming
-  4. Execute tools via tool.execute()
-  5. Add results to conversationHistory with role: "tool"
-  6. Loop back to completion() with updated history
-  7. Max 3 tool calls to prevent infinite loops
+## Navigation Structure
+- **Chat** - Main chat interface with AI
+- **Dashboard** - Hero section with stats, Free & Open Source card, Start Chatting button
+- **Sessions** - Table list of conversations
+- **Settings** - AI Configuration (ctx_size selector, Reload Model button)
+
+## System Prompt
+- Profile context included: name, type, age, gender
+- Tools section removed (Phase 7.2)
 
 ## Evolution of Project Decisions
 - 2026-05-20: Project scaffolded using electron-vite template
@@ -104,3 +103,8 @@
 - 2026-05-20: Phase 5.2 - Tools persistence + system prompt
 - 2026-05-20: Phase 5.3 - Tool call handling loop (like everclaw)
 - 2026-05-20: Phase 5.4 - Set profile for documentsStore in tool calls
+- 2026-05-20: Phase 6 - Settings page + LoadingScreen reload
+- 2026-05-21: Phase 6.1 - Simplified nav + model reload
+- 2026-05-21: Phase 7.1 - Profile context in system prompt
+- 2026-05-21: Phase 7.2 - Remove menubar, tools from prompt, simplify Settings
+- 2026-05-21: Phase 7.3 - Add Free & Open Source card on Dashboard

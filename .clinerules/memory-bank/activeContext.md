@@ -1,22 +1,16 @@
 # Active Context
 
 ## Current Work Focus
-- Phase 4: Sessions + Chat + AI integration
+- Phase 7 complete: Cleanup & UI improvements
 
 ## Recent Changes
-- Phase 4.3: Thinking box above response, trim leading \n
-- Phase 4.2: ProfileContext for global state, session dropdown fix, new session modal
-- Phase 4.1: Model loading on startup, LoadingScreen simplified
-- Chat page with session param support (?session=slug)
-- AI streaming with thinking box display
-- Session table shows conversations list
-- Click session → navigates to chat with session param
-- Session dropdown in Chat page header with New Session modal
-- Model loads on app startup with download-if-needed
+- Phase 7.1: Profile context in system prompt (name, type, age, gender)
+- Phase 7.2: Removed menubar, tools from prompt, simplified Settings page
+- Phase 7.3: Added Free & Open Source card on Dashboard above Start Chatting button
 
 ## Next Steps
-1. Test chat with AI streaming
-2. RAG implementation for document analysis
+1. Test full app flow
+2. Build production package
 
 ## Active Decisions and Considerations
 - Using QVAC SDK for AI model management
@@ -25,7 +19,9 @@
 - Session storage: `{userData}/profiles/{profileSlug}/sessions/{sessionSlug}/messages.json`
 - Default session: `main`
 - Chat loads/saves messages per session
-- ProfileContext provides global profile state (replaces localStorage)
+- ProfileContext provides global profile state
+- System prompt only includes profile context (no tools)
+- No menubar (removed in Phase 7.2)
 
 ## Important Patterns and Preferences
 - Blue gradient theme (Slack-style)
@@ -40,3 +36,5 @@
 - Model registry persists across app restarts (MODEL_ALREADY_REGISTERED error)
 - Model loading should happen once on startup, not triggered by UI
 - ProfileContext better than localStorage for profile state
+- Tools removed from system prompt to simplify AI responses
+- Simplified Settings page with only ctx_size selector and Reload Model button

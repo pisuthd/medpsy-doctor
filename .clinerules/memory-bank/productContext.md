@@ -17,11 +17,12 @@
 2. User selects or creates a profile
 3. Profile selection prompts contextual questions (age, role, etc.)
 4. Main interface shows dashboard, sessions, and chat
-5. Users can chat with AI and upload medical documents
-6. Tools can be enabled for real-world integrations
+5. Users can chat with AI for health assistance
+6. Simplified UI with no menubar (privacy-first approach)
 
 ## User Experience Goals
 - Clean, professional blue gradient interface (Slack-style)
 - Smooth animations with Framer Motion
 - Intuitive navigation between dashboard/sessions/chat
-- Drag & drop document upload for RAG
+- Free & Open Source messaging on dashboard
+- Simplified settings with context size configuration
