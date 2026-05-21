@@ -48,6 +48,7 @@ export default function Chat() {
   const [showSessionDropdown, setShowSessionDropdown] = useState(false)
   const [showNewSessionModal, setShowNewSessionModal] = useState(false)
   const [newSessionName, setNewSessionName] = useState('')
+  const [modalKey, setModalKey] = useState(0)
   
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
@@ -244,6 +245,7 @@ export default function Chat() {
               whileTap={{ scale: 0.98 }}
               onClick={() => {
                 setNewSessionName('')
+                setModalKey(k => k + 1)
                 setShowNewSessionModal(true)
               }}
               style={{
@@ -349,6 +351,7 @@ export default function Chat() {
           onClick={() => setShowNewSessionModal(false)}
         >
           <motion.div
+            key={modalKey}
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             onClick={(e) => e.stopPropagation()}
