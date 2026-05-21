@@ -194,7 +194,15 @@ export default function Chat() {
     }))
 
     try {
-      await window.api.ai.sendMessage(profile.id, sessionSlug, userMessage.content, history)
+      // Pass profile context for AI system prompt
+      const profileContext = profile ? {
+        name: profile.name,
+        type: profile.type,
+        age: profile.age,
+        gender: profile.gender,
+      } : undefined
+      
+      await window.api.ai.sendMessage(profile.id, sessionSlug, userMessage.content, history, profileContext)
     } catch (error) {
       console.error('Failed to send message:', error)
       setLoading(false)

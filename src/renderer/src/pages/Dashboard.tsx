@@ -27,40 +27,6 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   )
 }
 
-function StepCard({ num, title, subtitle }: { num: string; title: string; subtitle: string }) {
-  return (
-    <div style={{ 
-      padding: '24px', 
-      background: '#fff', 
-      border: '1px solid #e0e0f0', 
-      borderRadius: 8,
-      display: 'flex',
-      alignItems: 'flex-start',
-      gap: 16,
-    }}>
-      <div style={{
-        width: 40,
-        height: 40,
-        background: BLUE,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontFamily: monoFont,
-        fontWeight: 700,
-        fontSize: 14,
-        color: '#fff',
-        flexShrink: 0,
-      }}>
-        {num}
-      </div>
-      <div>
-        <h3 style={{ fontFamily: sansFont, fontSize: 16, fontWeight: 500, color: NAVY, margin: '0 0 4px 0' }}>{title}</h3>
-        <p style={{ fontFamily: sansFont, fontSize: 13, color: MUTED, margin: 0 }}>{subtitle}</p>
-      </div>
-    </div>
-  )
-}
-
 function StatItem({ label, value, subtext }: { label: string; value: string; subtext?: string }) {
   return (
     <div style={{ marginRight: 32 }}>

@@ -128,10 +128,10 @@ async function loadAIModel(): Promise<boolean> {
     
     modelId = await loadModel({
       modelSrc: modelPath,
-      modelType: 'llm',
+      modelType: 'llamacpp-completion',
       modelConfig: {
         ctx_size: settingsStore.getCtxSize(),
-        tools: true,
+        tools: false,
       },
       onProgress: (progress) => {
         const msg = typeof progress === 'string' ? progress : JSON.stringify(progress)
@@ -393,7 +393,7 @@ app.whenReady().then(async () => {
   }
 
   // AI Chat with streaming and tool calls
-  ipcMain.handle('ai:sendMessage', async (_event, profileSlug: string, sessionSlug: string, message: string, history: any[]) => {
+  ipcMain.handle('ai:sendMessage', async (_event, profileSlug: string, sessionSlug: string, message: string, history: any[], profile?: { name: string; type: string; age?: number; gender?: string }) => {
     if (!modelId || !mainWindowRef) {
       return { success: false, error: 'AI model not loaded' }
     }
@@ -404,8 +404,8 @@ app.whenReady().then(async () => {
       // Set profile for documents store so tools can access user documents
       documentsStore.setProfile(profileSlug)
       
-      // Get system prompt based on enabled tools
-      const toolsPrompt = getToolsSystemPrompt()
+      // Get system prompt based on enabled tools and profile context
+      const toolsPrompt = getToolsSystemPrompt(profile)
       
       // Build conversation history
       const conversationHistory = [

@@ -147,23 +147,53 @@ class SettingsStore {
 export const toolsStore = new ToolsStore()
 export const settingsStore = new SettingsStore()
 
-// Generate system prompt based on enabled tools
-export function getToolsSystemPrompt(): string {
-  const enabledTools = toolsStore.getEnabledTools()
-  
-  if (enabledTools.length === 0) {
-    return ''
+// Profile context interface
+export interface ProfileContext {
+  name: string
+  type: string
+  age?: number
+  gender?: string
+}
+
+// Generate system prompt based on enabled tools and profile
+export function getToolsSystemPrompt(profile?: ProfileContext): string {
+  let prompt = ''
+
+  // Add user context if available
+  if (profile) {
+    prompt += '\n\n## User Context\n\n'
+    prompt += `You are speaking with ${profile.name}. `
+    prompt += `Patient type: ${profile.type}. `
+    
+    if (profile.age || profile.gender) {
+      const ageStr = profile.age ? `${profile.age} year old` : ''
+      const genderStr = profile.gender ? profile.gender : ''
+      if (ageStr && genderStr) {
+        prompt += `Patient demographics: ${ageStr} ${genderStr}. `
+      } else if (ageStr) {
+        prompt += `Patient demographics: ${ageStr} old. `
+      } else if (genderStr) {
+        prompt += `Patient gender: ${genderStr}. `
+      }
+    }
+    
+    prompt += '\n'
   }
 
-  let prompt = '\n\n## Available Tools\n\n'
-  prompt += 'You have access to the following tools that the user has enabled:\n\n'
+  // Add tools context if any enabled
+  const enabledTools = toolsStore.getEnabledTools()
   
-  for (const tool of enabledTools) {
-    prompt += `- **${tool.name}**: ${tool.description}\n`
+  if (enabledTools.length > 0) {
+    prompt += '\n\n## Available Tools\n\n'
+    prompt += 'You have access to the following tools that the user has enabled:\n\n'
+    
+    for (const tool of enabledTools) {
+      prompt += `- **${tool.name}**: ${tool.description}\n`
+    }
+    
+    prompt += '\nUse these tools when relevant to help answer the user\'s questions. '
+    prompt += 'For example, if the user asks about their medical documents, use the document tools to retrieve that information.\n'
   }
-  
-  prompt += '\nUse these tools when relevant to help answer the user\'s questions. '
-  prompt += 'For example, if the user asks about their medical documents, use the document tools to retrieve that information.\n'
   
   return prompt
 }

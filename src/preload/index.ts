@@ -17,8 +17,8 @@ const api = {
     reload: () => ipcRenderer.invoke('ai:reload'),
     
     // Chat streaming
-    sendMessage: (profileSlug, sessionSlug, message, history) => 
-      ipcRenderer.invoke('ai:sendMessage', profileSlug, sessionSlug, message, history),
+    sendMessage: (profileSlug, sessionSlug, message, history, profile) => 
+      ipcRenderer.invoke('ai:sendMessage', profileSlug, sessionSlug, message, history, profile),
     
     // Event listeners for progress
     onDownloadProgress: (callback: (progress: number) => void) => {
