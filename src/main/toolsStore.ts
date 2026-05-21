@@ -155,7 +155,7 @@ export interface ProfileContext {
   gender?: string
 }
 
-// Generate system prompt based on enabled tools and profile
+// Generate system prompt based on profile context
 export function getToolsSystemPrompt(profile?: ProfileContext): string {
   let prompt = ''
 
@@ -178,21 +178,6 @@ export function getToolsSystemPrompt(profile?: ProfileContext): string {
     }
     
     prompt += '\n'
-  }
-
-  // Add tools context if any enabled
-  const enabledTools = toolsStore.getEnabledTools()
-  
-  if (enabledTools.length > 0) {
-    prompt += '\n\n## Available Tools\n\n'
-    prompt += 'You have access to the following tools that the user has enabled:\n\n'
-    
-    for (const tool of enabledTools) {
-      prompt += `- **${tool.name}**: ${tool.description}\n`
-    }
-    
-    prompt += '\nUse these tools when relevant to help answer the user\'s questions. '
-    prompt += 'For example, if the user asks about their medical documents, use the document tools to retrieve that information.\n'
   }
   
   return prompt

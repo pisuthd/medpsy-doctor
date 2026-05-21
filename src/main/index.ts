@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain, Menu, MenuItemConstructorOptions } from 'electron'
+import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -165,65 +165,6 @@ function getAIStatus(): AIStatus {
   }
 }
 
-function createDefaultMenu(): void {
-  const template: MenuItemConstructorOptions[] = [
-    {
-      label: 'File',
-      submenu: [
-        { role: 'quit' }
-      ]
-    },
-    {
-      label: 'Edit',
-      submenu: [
-        { role: 'undo' },
-        { role: 'redo' },
-        { type: 'separator' },
-        { role: 'cut' },
-        { role: 'copy' },
-        { role: 'paste' },
-        { role: 'selectAll' }
-      ]
-    },
-    {
-      label: 'View',
-      submenu: [
-        { role: 'reload' },
-        { role: 'forceReload' },
-        { role: 'toggleDevTools' },
-        { type: 'separator' },
-        { role: 'resetZoom' },
-        { role: 'zoomIn' },
-        { role: 'zoomOut' },
-        { type: 'separator' },
-        { role: 'togglefullscreen' }
-      ]
-    },
-    {
-      label: 'Window',
-      submenu: [
-        { role: 'minimize' },
-        { role: 'close' }
-      ]
-    },
-    {
-      label: 'Help',
-      submenu: [
-        {
-          label: 'About MedPsy Doctor',
-          click: async () => {
-            const { shell } = await import('electron')
-            await shell.openExternal('https://github.com/pisuthd/medpsy-doctor')
-          }
-        }
-      ]
-    }
-  ]
-
-  const menu = Menu.buildFromTemplate(template)
-  Menu.setApplicationMenu(menu)
-}
-
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
     width: 1200,
@@ -258,8 +199,6 @@ function createWindow(): void {
 // initialization and is ready to create browser windows.
 app.whenReady().then(async () => {
   electronApp.setAppUserModelId('com.medpsy.doctor')
-
-  createDefaultMenu()
 
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
